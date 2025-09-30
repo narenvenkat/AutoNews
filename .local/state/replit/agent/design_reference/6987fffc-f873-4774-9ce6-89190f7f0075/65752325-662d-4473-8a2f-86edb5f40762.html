@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoNews Dashboard - Content Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        border: "hsl(214.3 31.8% 91.4%)",
+                        input: "hsl(214.3 31.8% 91.4%)",
+                        ring: "hsl(221.2 83.2% 53.3%)",
+                        background: "hsl(0 0% 100%)",
+                        foreground: "hsl(222.2 84% 4.9%)",
+                        primary: {
+                            DEFAULT: "hsl(221.2 83.2% 53.3%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(0 84.2% 60.2%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(215.4 16.3% 46.9%)",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                        card: {
+                            DEFAULT: "hsl(0 0% 100%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans">
+    <div class="flex h-screen">
+        <!-- @COMPONENT: Sidebar Navigation -->
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col">
+            <div class="p-6 border-b border-slate-200">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-newspaper text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900">AutoNews</h1>
+                        <p class="text-sm text-slate-500">Content Operations</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-50 text-blue-700 font-medium">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+                            <i class="fas fa-plus-circle w-5"></i>
+                            <span>Create Job</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+                            <i class="fas fa-list w-5"></i>
+                            <span>All Jobs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+                            <i class="fas fa-video w-5"></i>
+                            <span>Published Content</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="p-4 border-t border-slate-200">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-slate-600 text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900" data-bind="user.name">Admin User</p>
+                        <p class="text-xs text-slate-500">Operator</p>
+                    </div>
+                    <button class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        <!-- @END_COMPONENT: Sidebar Navigation -->
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- @COMPONENT: Header -->
+            <header class="bg-white border-b border-slate-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Dashboard</h2>
+                        <p class="text-slate-600">Monitor your automated news pipeline</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- @STATE: lastSync:timestamp -->
+                        <div class="flex items-center space-x-2 text-sm text-slate-500">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Last sync: <span data-bind="lastSync">2 min ago</span></span>
+                        </div>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                            <i class="fas fa-plus mr-2"></i>
+                            New Job
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <!-- @END_COMPONENT: Header -->
+
+            <!-- Dashboard Content -->
+            <div class="flex-1 overflow-auto p-6">
+                <!-- @COMPONENT: KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-600">Jobs Today</p>
+                                <p class="text-3xl font-bold text-slate-900" data-bind="metrics.jobsToday">24</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-tasks text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-green-600 font-medium">+12%</span>
+                            <span class="text-slate-500 ml-1">from yesterday</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-600">Success Rate</p>
+                                <p class="text-3xl font-bold text-slate-900" data-bind="metrics.successRate">94.2%</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-green-600 font-medium">+2.1%</span>
+                            <span class="text-slate-500 ml-1">improvement</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-600">Avg Render Time</p>
+                                <p class="text-3xl font-bold text-slate-900" data-bind="metrics.avgRenderTime">2.4m</p>
+                            </div>
+                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-amber-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-green-600 font-medium">-15s</span>
+                            <span class="text-slate-500 ml-1">faster today</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-600">Published</p>
+                                <p class="text-3xl font-bold text-slate-900" data-bind="metrics.published">18</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-youtube text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-slate-500">to YouTube today</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: KPI Cards -->
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- @COMPONENT: Jobs Table -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl border border-slate-200">
+                            <div class="p-6 border-b border-slate-200">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-semibold text-slate-900">Recent Jobs</h3>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="relative">
+                                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm"></i>
+                                            <input type="text" placeholder="Search jobs..." class="pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        </div>
+                                        <select class="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>All Status</option>
+                                            <option>Running</option>
+                                            <option>Completed</option>
+                                            <option>Failed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-slate-50">
+                                        <tr>
+                                            <th class="text-left py-3 px-6 text-sm font-medium text-slate-600">Job ID</th>
+                                            <th class="text-left py-3 px-6 text-sm font-medium text-slate-600">Topic</th>
+                                            <th class="text-left py-3 px-6 text-sm font-medium text-slate-600">Status</th>
+                                            <th class="text-left py-3 px-6 text-sm font-medium text-slate-600">Progress</th>
+                                            <th class="text-left py-3 px-6 text-sm font-medium text-slate-600">Created</th>
+                                            <th class="text-left py-3 px-6 text-sm font-medium text-slate-600">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        <!-- @MAP: jobs.map(job => ( -->
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="py-4 px-6">
+                                                <span class="font-mono text-sm text-slate-900" data-bind="job.id">job_7891</span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div>
+                                                    <p class="text-sm font-medium text-slate-900" data-bind="job.topic">Tech Innovation</p>
+                                                    <p class="text-xs text-slate-500" data-bind="job.language">English • 90s</p>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    <i class="fas fa-sync-alt animate-spin mr-1"></i>
+                                                    Rendering
+                                                </span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="flex-1 bg-slate-200 rounded-full h-2">
+                                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                                                    </div>
+                                                    <span class="text-xs text-slate-500">75%</span>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <span class="text-sm text-slate-500" data-bind="job.createdAt">2 min ago</span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium" data-event="click:openJobDetail">
+                                                    View Details
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="py-4 px-6">
+                                                <span class="font-mono text-sm text-slate-900">job_7890</span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div>
+                                                    <p class="text-sm font-medium text-slate-900">Global Markets</p>
+                                                    <p class="text-xs text-slate-500">English • 120s</p>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <i class="fas fa-check mr-1"></i>
+                                                    Completed
+                                                </span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="flex-1 bg-slate-200 rounded-full h-2">
+                                                        <div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div>
+                                                    </div>
+                                                    <span class="text-xs text-slate-500">100%</span>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <span class="text-sm text-slate-500">5 min ago</span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                    View Details
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="py-4 px-6">
+                                                <span class="font-mono text-sm text-slate-900">job_7889</span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div>
+                                                    <p class="text-sm font-medium text-slate-900">Climate News</p>
+                                                    <p class="text-xs text-slate-500">Spanish • 60s</p>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                    Failed
+                                                </span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="flex-1 bg-slate-200 rounded-full h-2">
+                                                        <div class="bg-red-600 h-2 rounded-full" style="width: 45%"></div>
+                                                    </div>
+                                                    <span class="text-xs text-slate-500">45%</span>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <span class="text-sm text-slate-500">8 min ago</span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                    Retry
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- @END_MAP )) -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="p-4 border-t border-slate-200 flex items-center justify-between">
+                                <p class="text-sm text-slate-500">Showing 1-10 of 147 jobs</p>
+                                <div class="flex items-center space-x-2">
+                                    <button class="px-3 py-1 border border-slate-200 rounded text-sm hover:bg-slate-50 disabled:opacity-50" disabled>
+                                        Previous
+                                    </button>
+                                    <button class="px-3 py-1 border border-slate-200 rounded text-sm hover:bg-slate-50">
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: Jobs Table -->
+
+                    <!-- @COMPONENT: System Status & Quick Actions -->
+                    <div class="space-y-6">
+                        <!-- System Status -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-4">System Status</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-sm text-slate-600">GNews API</span>
+                                    </div>
+                                    <span class="text-xs text-green-600 font-medium">Operational</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-sm text-slate-600">Summarization</span>
+                                    </div>
+                                    <span class="text-xs text-green-600 font-medium">Operational</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
+                                        <span class="text-sm text-slate-600">TTS Service</span>
+                                    </div>
+                                    <span class="text-xs text-amber-600 font-medium">Degraded</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-sm text-slate-600">Video Rendering</span>
+                                    </div>
+                                    <span class="text-xs text-green-600 font-medium">Operational</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-sm text-slate-600">YouTube API</span>
+                                    </div>
+                                    <span class="text-xs text-green-600 font-medium">Operational</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button class="w-full flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                                    <i class="fas fa-plus-circle text-blue-600"></i>
+                                    <span class="text-sm font-medium text-slate-700">Create Manual Job</span>
+                                </button>
+                                <button class="w-full flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                                    <i class="fas fa-sync-alt text-green-600"></i>
+                                    <span class="text-sm font-medium text-slate-700">Trigger News Sync</span>
+                                </button>
+                                <button class="w-full flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                                    <i class="fas fa-pause-circle text-amber-600"></i>
+                                    <span class="text-sm font-medium text-slate-700">Pause Automation</span>
+                                </button>
+                                <button class="w-full flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+                                    <i class="fas fa-chart-bar text-purple-600"></i>
+                                    <span class="text-sm font-medium text-slate-700">View Analytics</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h3>
+                            <div class="space-y-4">
+                                <!-- @MAP: activities.map(activity => ( -->
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-slate-700" data-bind="activity.message">Job job_7891 started video rendering</p>
+                                        <p class="text-xs text-slate-500" data-bind="activity.timestamp">2 minutes ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-slate-700">Job job_7890 published to YouTube</p>
+                                        <p class="text-xs text-slate-500">5 minutes ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-slate-700">Job job_7889 failed during TTS conversion</p>
+                                        <p class="text-xs text-slate-500">8 minutes ago</p>
+                                    </div>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: System Status & Quick Actions -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- @COMPONENT: Job Detail Modal -->
+    <!-- Modal Overlay (hidden by default) -->
+    <div id="jobDetailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="p-6 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900" data-bind="selectedJob.id">Job Details - job_7891</h2>
+                    <p class="text-slate-600" data-bind="selectedJob.topic">Tech Innovation • English • 90s</p>
+                </div>
+                <button class="text-slate-400 hover:text-slate-600" onclick="closeJobDetail()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                <!-- Status Progress -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">Pipeline Progress</h3>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <span class="text-xs text-slate-500 mt-1">Fetch</span>
+                        </div>
+                        <div class="flex-1 h-1 bg-green-200 rounded"></div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <span class="text-xs text-slate-500 mt-1">Summarize</span>
+                        </div>
+                        <div class="flex-1 h-1 bg-green-200 rounded"></div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <span class="text-xs text-slate-500 mt-1">TTS</span>
+                        </div>
+                        <div class="flex-1 h-1 bg-blue-200 rounded"></div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-sync-alt animate-spin text-blue-600"></i>
+                            </div>
+                            <span class="text-xs text-slate-500 mt-1">Render</span>
+                        </div>
+                        <div class="flex-1 h-1 bg-slate-200 rounded"></div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-upload text-slate-400"></i>
+                            </div>
+                            <span class="text-xs text-slate-500 mt-1">Publish</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Article Summary -->
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-md font-semibold text-slate-900 mb-3">Generated Summary</h4>
+                            <div class="bg-slate-50 rounded-lg p-4">
+                                <p class="text-sm text-slate-700 leading-relaxed" data-bind="selectedJob.summary">
+                                    Breaking developments in artificial intelligence continue to reshape the technology landscape. Major tech companies announce significant investments in AI research, while new regulations emerge to address ethical concerns and safety protocols in AI deployment.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Audio Preview -->
+                        <div>
+                            <h4 class="text-md font-semibold text-slate-900 mb-3">Audio Preview</h4>
+                            <div class="bg-slate-50 rounded-lg p-4">
+                                <div class="flex items-center space-x-4">
+                                    <button class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <div class="flex-1">
+                                        <div class="h-2 bg-slate-200 rounded-full">
+                                            <div class="h-2 bg-blue-600 rounded-full" style="width: 30%"></div>
+                                        </div>
+                                        <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                            <span>0:15</span>
+                                            <span>1:30</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Logs -->
+                        <div>
+                            <h4 class="text-md font-semibold text-slate-900 mb-3">Execution Logs</h4>
+                            <div class="bg-slate-900 rounded-lg p-4 h-40 overflow-y-auto">
+                                <div class="font-mono text-xs space-y-1">
+                                    <div class="text-green-400">[2024-01-15 10:32:15] INFO: Job job_7891 started</div>
+                                    <div class="text-blue-400">[2024-01-15 10:32:16] INFO: Fetching article from GNews API</div>
+                                    <div class="text-green-400">[2024-01-15 10:32:18] INFO: Article fetched successfully</div>
+                                    <div class="text-blue-400">[2024-01-15 10:32:19] INFO: Calling summarization service</div>
+                                    <div class="text-green-400">[2024-01-15 10:32:45] INFO: Summary generated (89 words)</div>
+                                    <div class="text-blue-400">[2024-01-15 10:32:46] INFO: Converting text to speech</div>
+                                    <div class="text-green-400">[2024-01-15 10:33:12] INFO: TTS conversion completed (1:30 duration)</div>
+                                    <div class="text-blue-400">[2024-01-15 10:33:13] INFO: Starting video rendering</div>
+                                    <div class="text-yellow-400">[2024-01-15 10:34:45] INFO: Rendering in progress (75% complete)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Preview & Actions -->
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-md font-semibold text-slate-900 mb-3">Video Preview</h4>
+                            <!-- Modern video loading landscape with abstract tech elements -->
+                            <div class="bg-slate-100 rounded-lg aspect-video flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-video text-4xl text-slate-400 mb-3"></i>
+                                    <p class="text-slate-500">Video rendering in progress...</p>
+                                    <div class="w-32 h-1 bg-slate-200 rounded-full mx-auto mt-2">
+                                        <div class="h-1 bg-blue-600 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Details -->
+                        <div>
+                            <h4 class="text-md font-semibold text-slate-900 mb-3">Job Information</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-slate-600">Created:</span>
+                                    <span class="text-sm text-slate-900" data-bind="selectedJob.createdAt">2024-01-15 10:32:15</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-slate-600">Source:</span>
+                                    <span class="text-sm text-slate-900">GNews API</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-slate-600">Language:</span>
+                                    <span class="text-sm text-slate-900">English</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-slate-600">Target Length:</span>
+                                    <span class="text-sm text-slate-900">90 seconds</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-slate-600">Auto Publish:</span>
+                                    <span class="text-sm text-slate-900">Enabled</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="space-y-3">
+                            <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium" disabled>
+                                <i class="fas fa-upload mr-2"></i>
+                                Publish to YouTube (Rendering...)
+                            </button>
+                            <button class="w-full px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium">
+                                <i class="fas fa-download mr-2"></i>
+                                Download Assets
+                            </button>
+                            <button class="w-full px-4 py-2 border border-red-200 text-red-700 rounded-lg hover:bg-red-50 transition-colors font-medium">
+                                <i class="fas fa-stop mr-2"></i>
+                                Cancel Job
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: Job Detail Modal -->
+
+    <script>
+        // Simple modal functionality - in real implementation would use React state
+        (function() {
+            // TODO: Implement proper state management with React
+            function openJobDetail(jobId) {
+                document.getElementById('jobDetailModal').classList.remove('hidden');
+                // TODO: Fetch job details from API
+                // TODO: Update modal content with real data
+            }
+
+            function closeJobDetail() {
+                document.getElementById('jobDetailModal').classList.add('hidden');
+            }
+
+            // Make functions globally available
+            window.openJobDetail = openJobDetail;
+            window.closeJobDetail = closeJobDetail;
+
+            // Auto-refresh simulation
+            // TODO: Implement real-time updates via WebSocket or SSE
+            setInterval(() => {
+                // TODO: Poll for job status updates
+                // TODO: Update UI with new data
+                console.log('Checking for job updates...');
+            }, 5000);
+        })();
+    </script>
+</body>
+</html>
