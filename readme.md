@@ -41,7 +41,7 @@ Preferred communication style: Simple, everyday language.
 - **Caching**: In-memory caching for API responses and frequently accessed data
 
 ### Microservices Architecture
-The system employs a service-oriented architecture with specialized components:
+The system employs a service-oriented architecture with specialized components:-
 
 1. **Content Pipeline Services**:
    - GNews service for article fetching with rate limiting and caching
