@@ -1,8 +1,8 @@
-# AutoNews - Automated News Content Generation System
+# Autonomus News Anchor System
 
 ## Overview
 
-AutoNews is a comprehensive automated news content generation platform that transforms news articles into video content and publishes them to YouTube. The system fetches trending news articles, generates AI-powered summaries, converts text to speech, creates videos with visual elements, and automatically publishes the final content to social media platforms.
+Autonomous News is a comprehensive automated news content generation platform that transforms news articles into video content and publishes them to YouTube. The system fetches trending news articles, generates AI-powered summaries, converts text to speech, creates videos with visual elements, and automatically publishes the final content to social media platforms.
 
 The application is built as a full-stack TypeScript solution with a React frontend for dashboard management and a Node.js/Express backend handling the automated content pipeline. The system is designed to operate autonomously through scheduled jobs while providing manual override capabilities through the web interface.
 
@@ -41,7 +41,7 @@ Preferred communication style: Simple, everyday language.
 - **Caching**: In-memory caching for API responses and frequently accessed data
 
 ### Microservices Architecture
-The system employs a service-oriented architecture with specialized components:
+The system employs a service-oriented architecture with specialized components:-
 
 1. **Content Pipeline Services**:
    - GNews service for article fetching with rate limiting and caching
